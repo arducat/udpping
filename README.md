@@ -11,11 +11,11 @@
 
 
 Если вы хотите скомпилировать и сразу запустить:
-`cargo run --release --bin fget`
+`cargo run --release --bin udpping`
 
 
 Если вы хотите просто скомпилировать:
-`cargo build --release --bin fget`
+`cargo build --release --bin udpping`
 
 Скомпилированная версия соберется в udpping/target/release.
 
