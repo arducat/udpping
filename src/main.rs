@@ -13,7 +13,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     
     if (args.len() > 1) {
         if (args[1] == "-q") {
-            println!("Quick UdpPing: v0.1.1 beta");
+            println!("Quick UdpPing: v0.1.1");
             start = false; 
             
             if (args[2] == "-a" || args[2] == "--address") {
@@ -33,7 +33,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("Отправлено!");
         }
     } else {
-        println!("Консоль UdpPing: v0.1.1 beta");
+        println!("Консоль UdpPing: v0.1.1");
     }
 
     while start {
@@ -49,7 +49,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         /* Узрите говно-код от SvZ_FTeam! */
         
         if (command[0] == 'v' && command[1] == 'e' && command[2] == 'r') {
-            println!("Консоль UdpPing: v0.1.1 beta");
+            println!("Консоль UdpPing: v0.1.1");
         } else if (command[0] == 's' && command[1] == 'e' && command[2] == 'n' && command[3] == 'd' && command.len() == 4) {
             print!("Сообщение: ");
             io::stdout().flush().unwrap();
