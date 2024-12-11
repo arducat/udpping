@@ -1,23 +1,47 @@
 use std::env;
 use std::net::{UdpSocket, SocketAddr};
 use std::io::{self, Write};
+use colored::Colorize;
+
+fn print_error(error: &str, type_e: &str) {
+    match type_e {
+        "err" => {
+            println!("udpping: {}: {}", "Ошибка".bright_red().bold(), error.bold());
+        }
+        "hlp" => {
+            println!("udpping: {}: {}", "Подсказка".blue().bold(), error.bold());
+        }
+        "suc" => {
+            println!("udpping: {}", "Успешно!".green().bold());
+        }
+        _ => {}
+    }
+}
 
 fn quick_mode(socket: UdpSocket, args: Vec<String>) -> Result<(), Box<dyn std::error::Error>> {
-    println!("Quick UdpPing: v0.1.1");
+    println!("{}: {}", "Quick UdpPing".bold(), "v0.1.2".bright_black().bold());
     
     if args[2] != "-a" && args[2] != "--address" {
-        println!("Вторым аргументом должен быть -a [адрес udp сервера] или --address [адрес udp сервера]!");
+        print_error("Неверные аргументы", "err");
+        print_error("Вторым аргументом должен быть -a [адрес udp сервера] или --address [адрес udp сервера]!", "hlp");
         return Ok(());
     }
 
     if args[4] != "-s" && args[4] != "--send" {
-        println!("Третьим аргументом должен быть -s [сообщение] или --send [сообщение]!");
+        print_error("Неверные аргументы", "err");
+        print_error("Третьим аргументом должен быть -s [сообщение] или --send [сообщение]!", "hlp");
         return Ok(());
     }
-
-    let server_addr = args[3].trim().parse::<SocketAddr>()?;
+    
+    let server_addr: SocketAddr = match args[3].trim().parse() {
+                    Ok(val) => val,
+                    Err(_) => {
+                        print_error("Неверный адрес!", "err");
+                        return Ok(());
+                    },
+                };
     socket.send_to(args[5].as_bytes(), server_addr)?;
-    println!("Отправлено!");
+    print_error(" ", "suc");
     Ok(())
 }
 
@@ -31,7 +55,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         return quick_mode(socket, args);
     }
 
-    println!("Консоль UdpPing: v0.1.1");
+    println!("{}: {}", "Консоль UdpPing".bold(), "v0.1.2".bright_black().bold());
     loop {
         print!("[udpping] > ");
         io::stdout().flush().unwrap();
@@ -54,7 +78,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         };
 
         match command.trim() {
-            "ver" => println!("Консоль UdpPing: v0.1.1"),
+            "ver" => println!("{}: {}", "Консоль UdpPing".bold(), "v0.1.2".bright_black().bold()),
             "send" => {
                 let mut message = String::new();
                 let arg = if args.is_empty() {
@@ -68,14 +92,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 };
 
                 socket.send_to(arg.as_bytes(), server_addr)?;
-                println!("Отправлено!");
+                print_error(" ", "suc");
             },
             "help" => {
-                println!("Команды:");
-                println!("  connect [адрес] - Подключает к UDP серверу. Если адрес сервера не указан, Вас его спросят. ИСПОЛЬЗОВАТЬ ДО \"send\"!");
-                println!("  send [сообщение] - Отправляет сообщение на подключенный UDP сервер. ИСПОЛЬЗОВАТЬ ПОСЛЕ \"connect\"!");
-                println!("  ver - Выводит версию Консоли UdpPing.");
-                println!("  exit - Выходит из Консоли UdpPing.");
+                println!("{}", "Команды:". bold());
+                println!("  {} - Подключает к UDP серверу. Если адрес сервера не указан, Вас его спросят. {}", "connect [адрес]".bold(), "ИСПОЛЬЗОВАТЬ ДО \"send\"!".bright_red().bold());
+                println!("  {} - Отправляет сообщение на подключенный UDP сервер. {}", "send [сообщение]".bold(), "ИСПОЛЬЗОВАТЬ ПОСЛЕ \"connect\"!".bright_red().bold());
+                println!("  {} - Выводит версию Консоли UdpPing.", "ver".bold());
+                println!("  {} - Выходит из Консоли UdpPing.", "exit".bold());
             },
             "exit" => break,
             "connect" => {
@@ -93,13 +117,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 server_addr = match arg.parse() {
                     Ok(val) => val,
                     Err(_) => {
-                        println!("Неверный адрес!");
+                        print_error("Неверный адрес!", "err");
                         continue;
                     },
                 };
-                println!("Подключено!");
+                print_error(" ", "suc");
             },
-            command => println!("Неверная команда: \"{command}\"!"),
+            command => print_error("Неверная команда: \"{command}\"!", "err"),
         }
     }
     
