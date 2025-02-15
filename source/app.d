@@ -5,8 +5,20 @@ import std.array;
 import std.string;
 import std.conv;
 
-void main() {
-        auto udps = new UdpSocket();
+void main(string[] args) {
+	if (args.length <= 1) {
+		shell();
+	} else {
+        	quick();
+        }
+}
+
+void quick() {
+	writeln("Быстрый режим...");
+}
+
+void shell() {
+	auto udps = new UdpSocket();
         auto addr = new InternetAddress("localhost", 25565);
         udps.connect(addr);
         bool gogo = true;
@@ -24,16 +36,18 @@ void main() {
                                 	addr = new InternetAddress(std.socket.InternetAddress.parse(shit[0]), to!ushort(shit[1]));
                                 	udps.connect(addr);
                                 	writeln("Подключено успешно!");
-                                } finally {
-                                	
+                                } catch (core.exception.ArrayIndexError e) {
+                                	writeln("Похоже, что вы использовали эту команду неверно.");
+                                	writeln("Использование: connect адрес:порт");
                                 }
                                 break;
                         case "send":
                                 try {
                                 	udps.send(w[1]);
                                 	writeln("Отправлено успешно!");
-                                } finally {
-                                	
+                                } catch (core.exception.ArrayIndexError e) {
+                                	writeln("Похоже, что вы использовали эту команду неверно.");
+                                	writeln("Использование: send сообщение");
                                 }
                                 break;
                         
@@ -41,5 +55,4 @@ void main() {
                                 writeln("Команда ", w[0], " не найдена.");
                 }
         }
-
 }
