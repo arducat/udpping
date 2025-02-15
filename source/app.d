@@ -14,16 +14,18 @@ void main(string[] args) {
 }
 
 void quick() {
-	writeln("Быстрый режим...");
+	writeln("Quick UdpPing: v0.1.2-D");
 }
 
 void shell() {
+	writeln("Консоль UdpPing: v0.1.2-D");
 	auto udps = new UdpSocket();
         auto addr = new InternetAddress("localhost", 25565);
         udps.connect(addr);
         bool gogo = true;
 
         while (gogo) {
+        	write("[udpping] > ");
                 string input = stdin.readln().strip();
                 string[] w = input.split();
                 switch (w[0]) {
@@ -49,6 +51,12 @@ void shell() {
                                 	writeln("Похоже, что вы использовали эту команду неверно.");
                                 	writeln("Использование: send сообщение");
                                 }
+                                break;
+                        case "help":
+                                writeln("Команды:\nconnect [адрес:порт] - Подключает к UDP серверу. Если адрес сервера не указан, Вас его спросят. ИСПОЛЬЗОВАТЬ ДО \"send\"!\nsend [сообщение] - Отправляет сообщение на подключенный UDP сервер. ИСПОЛЬЗОВАТЬ ПОСЛЕ \"connect\"!\nver - Выводит версию Консоли UdpPing.\nexit - Выходит из Консоли UdpPing.");
+                                break;
+                        case "ver":
+                                writeln("Консоль UdpPing: v0.1.2-D");
                                 break;
                         
                         default:
