@@ -9,12 +9,40 @@ void main(string[] args) {
 	if (args.length <= 1) {
 		shell();
 	} else {
-        	quick();
+		if (args[1] == "-q") {
+        		quick(args);
+        	} else {
+        		writeln("Аргументы не распознаны.");
+        	}
         }
 }
 
-void quick() {
+int quick(string[] args) {
 	writeln("Quick UdpPing: v0.1.2-D");
+	
+	if (args.length < 6) {
+		writeln("Недостаточно аргументов.");
+		return(-1);
+	}
+	
+	if (!(args[2] == "-a" || args[2] == "--address")) {
+		writeln("Аргументы неверны");
+		writeln("Вторым аргументом должен быть -a [адрес:порт] или --address [адрес:порт]!");
+		return(-1);
+	}
+	
+	if (!(args[4] == "-s" || args[4] == "--send")) {
+		writeln("Аргументы неверны");
+		writeln("Третьим аргументом должен быть -s [сообщение] или --send [сообщение]!");
+		return(-1);
+	}
+	
+	string[] shit = args[3].split(":");
+	auto udps = new UdpSocket();
+        auto addr = new InternetAddress(std.socket.InternetAddress.parse(shit[0]), to!ushort(shit[1]));
+	udps.connect(addr);
+        udps.send(args[5]);
+	return(0);
 }
 
 void shell() {
