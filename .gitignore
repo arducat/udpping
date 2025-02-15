@@ -1,1 +1,16 @@
-/target
+.dub
+docs.json
+__dummy.html
+docs/
+/udpping-d
+udpping-d.so
+udpping-d.dylib
+udpping-d.dll
+udpping-d.a
+udpping-d.lib
+udpping-d-test-*
+*.exe
+*.pdb
+*.o
+*.obj
+*.lst

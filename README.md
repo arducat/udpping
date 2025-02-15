@@ -1,22 +1,24 @@
-# UdpPing v0.1.2
+# UdpPing v0.1.2-D
 
 Простая утилита для отправления запросов на UDP сервер.
+
+### Прямо сейчас идет перепись на Dlang. Программа может быть не полностью реализована в сравнении с версией на Rust.
 
 ## Компилирование и запуск приложения
 
 
 Сначала клонируем репозиторий:
-`git clone https://gitverse.ru/fteam/udpping.git`
+`git clone https://github.com/arducat/udpping.git`
 
 
 Если вы хотите скомпилировать и сразу запустить:
-`cargo run --release --bin udpping`
+`dub run --build=release`
 
 
 Если вы хотите просто скомпилировать:
-`cargo build --release --bin udpping`
+`dub build --build=release`
 
-Скомпилированная версия соберется в udpping/target/release.
+Скомпилированная версия соберется в корне папки.
 
 Так же готовый бинарный файл и скрипт-установщик можно найти в релизах.
 
