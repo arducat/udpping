@@ -73,6 +73,7 @@ void shell() {
 
         while (gogo) {
         	write("[udpping] > ");
+		stdout.flush();
                 string input = stdin.readln().strip();
                 string[] w = input.split();
                 switch (w[0]) {
@@ -87,6 +88,7 @@ void shell() {
                                 	uerr("", 's');
                                 } catch (core.exception.ArrayIndexError e) {
                                 	write("Адрес UDP сервера: ");
+					stdout.flush();
                                 	string kakpravilno = stdin.readln().strip();
                                 	string[] shit = kakpravilno.split(":");
                                 	addr = new InternetAddress(std.socket.InternetAddress.parse(shit[0]), to!ushort(shit[1]));
@@ -100,6 +102,7 @@ void shell() {
                                 	uerr("", 's');
                                 } catch (core.exception.ArrayIndexError e) {
                                 	write("Сообщение: ");
+					stdout.flush();
                                 	string kakpravilno = stdin.readln().strip();
                                 	udps.send(kakpravilno);
                                 	uerr("", 's');
