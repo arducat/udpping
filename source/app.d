@@ -31,12 +31,12 @@ void uerr(string error, char type) {
 			cwritefln("udpping: <b><lgreen>Успешно!</lgreen></b>");
 			break;
 		default:
-			int a = 23434234;
+			return;
 	}
 }
 
 int quick(string[] args) {
-	cwritefln("<b>Quick UdpPing</b>:<b><grey> v0.1.2-D</grey></b>");
+	cwritefln("<b>Quick UdpPing</b>:<b><grey> v0.1.3</grey></b>");
 	
 	if (args.length < 6) {
 		uerr("Недостаточно аргументов.", 'e');
@@ -44,20 +44,20 @@ int quick(string[] args) {
 	}
 	
 	if (!(args[2] == "-a" || args[2] == "--address")) {
-		uerr("Аргументы неверны.", 'e');
+		uerr("Неверное использование.", 'e');
 		uerr("Вторым аргументом должен быть -a [адрес:порт] или --address [адрес:порт]!", 'i');
 		return(-1);
 	}
 	
 	if (!(args[4] == "-s" || args[4] == "--send")) {
-		uerr("Аргументы неверны.", 'e');
+		uerr("Неверное использование.", 'e');
 		uerr("Третьим аргументом должен быть -s [сообщение] или --send [сообщение]!", 'i');
 		return(-1);
 	}
 	
-	string[] shit = args[3].split(":");
+	string[] tmp = args[3].split(":");
 	auto udps = new UdpSocket();
-        auto addr = new InternetAddress(std.socket.InternetAddress.parse(shit[0]), to!ushort(shit[1]));
+        auto addr = new InternetAddress(std.socket.InternetAddress.parse(tmp[0]), to!ushort(tmp[1]));
 	udps.connect(addr);
         udps.send(args[5]);
         uerr("", 's');
@@ -65,7 +65,7 @@ int quick(string[] args) {
 }
 
 void shell() {
-	cwritefln("<b>Консоль UdpPing</b>:<b><grey> v0.1.2-D</grey></b>");
+	cwritefln("<b>Консоль UdpPing</b>:<b><grey> v0.1.3</grey></b>");
 	auto udps = new UdpSocket();
         auto addr = new InternetAddress("localhost", 25565);
         udps.connect(addr);
@@ -74,37 +74,45 @@ void shell() {
         while (gogo) {
         	write("[udpping] > ");
 		stdout.flush();
-                string input = stdin.readln().strip();
-                string[] w = input.split();
-                switch (w[0]) {
+                string[] input = (stdin.readln().strip()).split();
+                switch (input[0]) {
                         case "exit":
                                 gogo = false;
                                 break;
                         case "connect":
-                                try {
-                                	string[] shit = w[1].split(":");
-                                	addr = new InternetAddress(std.socket.InternetAddress.parse(shit[0]), to!ushort(shit[1]));
-                                	udps.connect(addr);
-                                	uerr("", 's');
-                                } catch (core.exception.ArrayIndexError e) {
+                                if (input.length == 2) {
+                                	auto tmp = input[1].findSplit(":");
+                                	if (tmp[2] != "") {
+                                		addr = new InternetAddress(std.socket.InternetAddress.parse(tmp[0].strip()), to!ushort(tmp[2].strip()));
+                                		udps.connect(addr);
+                                		uerr("", 's');
+					} else {
+						uerr("Неверное использование.", 'e');
+						uerr("Адрес должен быть в формате айпи:порт!", 'i');
+					}
+                                } else {
                                 	write("Адрес UDP сервера: ");
 					stdout.flush();
-                                	string kakpravilno = stdin.readln().strip();
-                                	string[] shit = kakpravilno.split(":");
-                                	addr = new InternetAddress(std.socket.InternetAddress.parse(shit[0]), to!ushort(shit[1]));
-                                	udps.connect(addr);
-                                	uerr("", 's');
+                                	auto tmp = (stdin.readln().strip()).findSplit(":");
+                                	if (tmp[2] != "") {
+                                		addr = new InternetAddress(std.socket.InternetAddress.parse(tmp[0].strip()), to!ushort(tmp[2].strip()));
+                                		udps.connect(addr);
+                                		uerr("", 's');
+                                	} else {
+                                		uerr("Неверное использование.", 'e');
+						uerr("Адрес должен быть в формате айпи:порт!", 'i');
+                                	}
                                 }
                                 break;
                         case "send":
-                                try {
-                                	udps.send(w[1]);
+                                if (input.length == 2) {
+                                	udps.send(input[1]);
                                 	uerr("", 's');
-                                } catch (core.exception.ArrayIndexError e) {
+                                } else {
                                 	write("Сообщение: ");
 					stdout.flush();
-                                	string kakpravilno = stdin.readln().strip();
-                                	udps.send(kakpravilno);
+                                	string tmp = stdin.readln().strip();
+                                	udps.send(tmp);
                                 	uerr("", 's');
                                 }
                                 break;
@@ -112,11 +120,11 @@ void shell() {
                                 cwritefln("<b>Команды:\n  connect [адрес:порт]</b> - Подключает к UDP серверу. Если адрес сервера не указан, Вас его спросят. <b><red>ИСПОЛЬЗОВАТЬ ДО \"send\"!</red>\n  send [сообщение]</b> - Отправляет сообщение на подключенный UDP сервер. <b><red>ИСПОЛЬЗОВАТЬ ПОСЛЕ \"connect\"!</red>\n  ver</b> - Выводит версию Консоли UdpPing.\n  <b>exit</b> - Выходит из Консоли UdpPing.");
                                 break;
                         case "ver":
-                                cwritefln("<b>Консоль UdpPing</b>:<b><grey> v0.1.2-D</grey></b>");
+                                cwritefln("<b>Консоль UdpPing</b>:<b><grey> v0.1.3</grey></b>");
                                 break;
                         
                         default:
-                                uerr("Неизвестная команда: \"" ~ w[0] ~ "\"", 'e');
+                                uerr("Неизвестная команда: \"" ~ input[0] ~ "\"", 'e');
                 }
         }
 }
